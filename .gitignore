@@ -1,0 +1,6 @@
+*.pyc
+!.gitkeep
+.idea
+.DS_Store
+env/
+__pycache__
