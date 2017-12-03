@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://code.angularjs.org/1.6.0/angular.min.js" type="text/javascript"></script>
+        <title>Splatkovy kalendar</title>
+    </head>
+    <body>
+    <div lang="en" ng-app="splatky" ng-controller="splatkyController">
+        <form name="form" ng-submit="calculate()" role="form">
+            Pujcena castka: <input type="text" ng-model="castka">
+            Pocet splatek: <input type="text" ng-model="pocet">
+            Sazba: <input type="text" ng-model="sazba">
+            <button type="submit">Splatkovy kalendar</button>
+            <button type="button" ng-click="toCsv()">Do CSV formatu</button>
+        </form>
+        <div ng-show="results">
+            <table class="table" style="border-collapse: separate;border-spacing: 10px 1px;">
+                <tr>
+                    <th>Poradi</th>
+                    <th>Splatka</th>
+                    <th>Jistina</th>
+                    <th>Urok</th>
+                </tr>
+                <tr ng-repeat="splatka in splatky">
+                    <td>{{splatka.poradi}}</td>
+                    <td>{{splatka.splatka | number : 2}}</td>
+                    <td>{{splatka.jistina | number : 2}}</td>
+                    <td>{{splatka.urok | number : 2}}</td>
+                </tr>
+            </table>
+        </div>
+        <div ng-show="csv">
+            <textarea ngTrim="false" ng-model="csvData" style="height: 200px;width: 300px;"></textarea>
+        </div>
+    </div>
+    <script type="text/javascript">
+(function () {
+    'use strict';
+
+    angular.module('splatky', []).controller('splatkyController', ['$scope', '$http', function ($scope, $http) {
+        $scope.pocet = 84;
+        $scope.castka = 245000;
+        $scope.sazba = 3.99;
+        $scope.results = false;
+        $scope.csv = false;
+        $scope.splatky = [];
+        $scope.csvData = '';
+
+        $scope.calculate = function() {
+            $http.post(
+                'compute',
+                JSON.stringify({
+                    pocet: parseInt($scope.pocet),
+                    castka: parseInt($scope.castka),
+                    sazba: parseInt($scope.sazba)
+                })
+            ).then(function(data) {
+                $scope.csv = false;
+                $scope.results = true;
+                $scope.splatky = data.data;
+            });
+        };
+        $scope.toCsv = function() {
+            $http.post(
+                'compute',
+                JSON.stringify({
+                    pocet: parseInt($scope.pocet),
+                    castka: parseInt($scope.castka),
+                    sazba: parseInt($scope.sazba)
+                })
+            ).then(function(data) {
+                $scope.csv = true;
+                $scope.results = false;
+                $scope.csvData = "poradi;splatka;jistina;urok";
+                var arrayLength = data.data.length;
+                for (var i = 0; i < arrayLength; i++) {
+                    $scope.csvData += '\n';
+                    $scope.csvData += String(data.data[i].poradi) + ';';
+                    $scope.csvData += String(data.data[i].splatka) + ';';
+                    $scope.csvData += String(data.data[i].jistina) + ';';
+                    $scope.csvData += String(data.data[i].urok);
+                }
+            });
+
+        };
+    }]);
+
+    angular.element(function() {
+        angular.bootstrap(document, ['splatky']);
+    });
+
+})();
+    </script>
+    </body>
+</html>
