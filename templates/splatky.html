@@ -7,12 +7,12 @@
     </head>
     <body>
     <div lang="en" ng-app="splatky" ng-controller="splatkyController">
-        <form name="form" ng-submit="calculate()" role="form">
+        <form name="form" ng-submit="splatkyDisabled = true; calculate();" role="form">
             Pujcena castka: <input type="text" ng-model="castka">
             Pocet splatek: <input type="text" ng-model="pocet">
             Sazba: <input type="text" ng-model="sazba">
-            <button type="submit">Splatkovy kalendar</button>
-            <button type="button" ng-click="toCsv()">Do CSV formatu</button>
+            <button type="submit" ng-disabled="splatkyDisabled">Splatkovy kalendar</button>
+            <button type="button" ng-click="csvDisabled=true; toCsv();" ng-disabled="csvDisabled">Do CSV formatu</button>
         </form>
         <div ng-show="results">
             <table class="table" style="border-collapse: separate;border-spacing: 10px 1px;">
@@ -46,6 +46,8 @@
         $scope.csv = false;
         $scope.splatky = [];
         $scope.csvData = '';
+        $scope.splatkyDisabled = false;
+        $scope.csvDisabled = false;
 
         $scope.calculate = function() {
             $http.post(
@@ -59,9 +61,11 @@
                 $scope.csv = false;
                 $scope.results = true;
                 $scope.splatky = data.data;
+                $scope.splatkyDisabled = false;
             });
         };
         $scope.toCsv = function() {
+            $scope.csvDisabled = true;
             $http.post(
                 'compute',
                 JSON.stringify({
@@ -70,6 +74,7 @@
                     sazba: parseInt($scope.sazba)
                 })
             ).then(function(data) {
+                $scope.csvDisabled = false;
                 $scope.csv = true;
                 $scope.results = false;
                 $scope.csvData = "poradi;splatka;jistina;urok";
@@ -85,11 +90,6 @@
 
         };
     }]);
-
-    angular.element(function() {
-        angular.bootstrap(document, ['splatky']);
-    });
-
 })();
     </script>
     </body>

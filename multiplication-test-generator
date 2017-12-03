@@ -126,7 +126,7 @@ def splatky(pocet=84, castka=245000, sazba=3.99):
     sum_urok = 0.0
     uroky = []
     for _ in range(pocet):
-        urok = round((zbytek * (sazba / 100)) / 12, 2)
+        urok = round((float(zbytek) * (sazba / 100.00)) / 12.00, 2)
         uroky.append(urok)
         zbytek -= jistina
         sum_urok += urok
@@ -141,7 +141,7 @@ def splatky(pocet=84, castka=245000, sazba=3.99):
             # print("Splatka %.2f, jistina %d, urok %.2f" % (jistina + urok, jistina, urok))
 
     if zbytek > 0:
-        urok = round((zbytek * (sazba / 100)) / 12, 2)
+        urok = round((float(zbytek) * (sazba / 100.00)) / 12.00, 2)
         uroky[-1] += urok
         sum_urok += urok
         sum_jistina += zbytek
@@ -151,7 +151,7 @@ def splatky(pocet=84, castka=245000, sazba=3.99):
     sum_jistina_urok = int(sum_jistina + sum_urok)
     fixni_splatka = int(sum_jistina_urok / pocet)
     i = 0
-    s_urok = 0
+    s_urok = 0.00
     s_jistina = 0
     ret = []
     # print(";splatka;jistina;urok")
@@ -221,5 +221,5 @@ def splatky_get():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', threaded=True)
-    # app.run(debug=True)
+    # app.run(host='127.0.0.1', port=22222, threaded=True)
+    app.run(debug=True)
