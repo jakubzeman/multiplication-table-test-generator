@@ -1,0 +1,14 @@
+{
+    "defaults": {
+        "project_name":"%appname%",
+        "iam_authorization": false,
+        "app_function": "multiplication-test-generator.app",
+
+        "aws_region": "%region%"
+    },
+    "jakub": {
+        "extends": "defaults",
+        "profile_name": "jakub",
+        "s3_bucket": "%s3bucket%"
+    }
+}

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import itertools
 import random
@@ -183,6 +182,12 @@ def splatky(pocet=84, castka=245000, sazba=3.99):
         i += 1
         # print("%d;%s" % (i, row.replace('.', ',')))
         ret.append(row)
+    ret.append({
+        "poradi": "Celkem",
+        "splatka": sum_jistina + sum_urok,
+        "jistina": sum_jistina,
+        "urok": sum_urok
+    })
     return ret
 
 
